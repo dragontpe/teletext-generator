@@ -1,0 +1,31 @@
+@font-face {
+  font-family: 'Bedstead';
+  src: url('bedstead.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+@font-face {
+  font-family: 'Bedstead Extended';
+  src: url('bedstead-extended.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+@font-face {
+  font-family: 'Teletext50';
+  src: url('teletext50.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+@font-face {
+  font-family: 'Mode Seven';
+  src: url('mode7gx3.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}

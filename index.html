@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TelePage — Vintage Teletext Generator</title>
+  <link rel="stylesheet" href="css/style.css?v=2&t=20260220">
+  <link rel="stylesheet" href="fonts/fonts.css">
+</head>
+<body>
+  <header class="app-header">
+    <h1 class="app-title">TelePage</h1>
+    <span class="app-subtitle">Vintage Teletext Generator</span>
+    <button class="btn-help" id="btnHelp" title="Help">?</button>
+  </header>
+
+  <main class="app-main">
+    <aside class="controls-panel" id="controlsPanel">
+      <!-- Template Picker -->
+      <section class="control-group">
+        <h2 class="control-heading">Template</h2>
+        <div class="template-grid" id="templateGrid"></div>
+      </section>
+
+      <!-- Page Info -->
+      <section class="control-group">
+        <h2 class="control-heading">Page Info</h2>
+        <div class="field-row">
+          <label>Page Number</label>
+          <input type="text" id="pageNumber" value="100" maxlength="3" class="input-small">
+        </div>
+        <div class="field-row">
+          <label>Service Name</label>
+          <input type="text" id="serviceName" value="CEEFAX" maxlength="12" class="input-medium">
+        </div>
+        <div class="field-row">
+          <label>Date/Time</label>
+          <input type="text" id="dateTime" class="input-wide" placeholder="Auto">
+        </div>
+      </section>
+
+      <!-- Text Input -->
+      <section class="control-group">
+        <h2 class="control-heading">Content</h2>
+        <div class="field-row">
+          <label>Title</label>
+          <input type="text" id="titleText" value="HEADLINE TEXT HERE" maxlength="40" class="input-wide">
+        </div>
+        <div class="field-row" id="subtitleRow">
+          <label>Subtitle</label>
+          <input type="text" id="subtitleText" value="" maxlength="40" class="input-wide">
+        </div>
+        <div class="field-row">
+          <label>Body Text <span class="char-count" id="charCount"></span></label>
+          <textarea id="bodyText" rows="8" class="input-wide" spellcheck="false">The quick brown fox jumps over the lazy dog. This is a sample teletext page with some body text to demonstrate the rendering engine.</textarea>
+        </div>
+        <!-- Sports-specific inputs -->
+        <div id="sportsInputs" class="template-inputs hidden">
+          <h3 class="control-subheading">Match Results</h3>
+          <div id="sportsRows"></div>
+          <button class="btn-small" id="addSportsRow">+ Add Match</button>
+        </div>
+        <!-- TV Listings inputs -->
+        <div id="tvInputs" class="template-inputs hidden">
+          <h3 class="control-subheading">Listings</h3>
+          <div id="tvRows"></div>
+          <button class="btn-small" id="addTvRow">+ Add Programme</button>
+        </div>
+        <!-- Fastext labels -->
+        <div class="field-row">
+          <label><input type="checkbox" id="fastextEnabled" checked> Fastext Labels</label>
+          <div class="fastext-inputs">
+            <input type="text" id="fastext0" value="Headlines" maxlength="10" class="input-fastext" style="border-left:3px solid #FF0000">
+            <input type="text" id="fastext1" value="Sport" maxlength="10" class="input-fastext" style="border-left:3px solid #00FF00">
+            <input type="text" id="fastext2" value="Weather" maxlength="10" class="input-fastext" style="border-left:3px solid #FFFF00">
+            <input type="text" id="fastext3" value="Index" maxlength="10" class="input-fastext" style="border-left:3px solid #00FFFF">
+          </div>
+        </div>
+      </section>
+
+      <!-- Colors -->
+      <section class="control-group">
+        <h2 class="control-heading">Colors</h2>
+        <div class="field-row">
+          <label>Header Background</label>
+          <div class="color-picker" id="colorHeaderBg" data-target="headerBg"></div>
+        </div>
+        <div class="field-row">
+          <label>Header Text</label>
+          <div class="color-picker" id="colorHeaderText" data-target="headerText"></div>
+        </div>
+        <div class="field-row">
+          <label>Title Color</label>
+          <div class="color-picker" id="colorTitle" data-target="titleColor"></div>
+        </div>
+        <div class="field-row">
+          <label>Body Text</label>
+          <div class="color-picker" id="colorBody" data-target="bodyColor"></div>
+        </div>
+      </section>
+
+      <!-- Font & Effects -->
+      <section class="control-group">
+        <h2 class="control-heading">Rendering</h2>
+        <div class="field-row">
+          <label>Header Font</label>
+          <select id="fontHeader" class="input-wide">
+            <option value="bedstead">Bedstead</option>
+            <option value="bedstead-ext">Bedstead Extended</option>
+            <option value="modeseven">Mode Seven</option>
+          </select>
+        </div>
+        <div class="field-row">
+          <label>Title Font</label>
+          <select id="fontTitle" class="input-wide">
+            <option value="bedstead">Bedstead</option>
+            <option value="bedstead-ext">Bedstead Extended</option>
+            <option value="modeseven">Mode Seven</option>
+          </select>
+        </div>
+        <div class="field-row">
+          <label>Body Font</label>
+          <select id="fontBody" class="input-wide">
+            <option value="bedstead">Bedstead</option>
+            <option value="bedstead-ext">Bedstead Extended</option>
+            <option value="modeseven">Mode Seven</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- CRT Effects -->
+      <section class="control-group">
+        <h2 class="control-heading">CRT Effects</h2>
+        <div class="field-row">
+          <label>Preset</label>
+          <select id="crtPreset" class="input-medium">
+            <option value="clean">Clean (no effects)</option>
+            <option value="mild">Mild CRT</option>
+            <option value="authentic" selected>Authentic CRT</option>
+            <option value="beatup">Beat-up Old TV</option>
+          </select>
+        </div>
+        <div class="effect-toggle">
+          <label><input type="checkbox" id="effectScanlines" checked> Scanlines</label>
+          <input type="range" id="scanlinesIntensity" min="0" max="100" value="40" class="slider">
+        </div>
+        <div class="effect-toggle">
+          <label><input type="checkbox" id="effectGlow" checked> Phosphor Glow</label>
+          <input type="range" id="glowIntensity" min="0" max="100" value="30" class="slider">
+        </div>
+        <div class="effect-toggle">
+          <label><input type="checkbox" id="effectVignette" checked> Vignette</label>
+          <input type="range" id="vignetteIntensity" min="0" max="100" value="50" class="slider">
+        </div>
+        <div class="effect-toggle">
+          <label><input type="checkbox" id="effectBarrel" checked> Barrel Distortion</label>
+          <input type="range" id="barrelIntensity" min="0" max="100" value="20" class="slider">
+        </div>
+        <div class="effect-toggle">
+          <label><input type="checkbox" id="effectBleed" checked> Color Bleed</label>
+          <input type="range" id="bleedIntensity" min="0" max="100" value="25" class="slider">
+        </div>
+        <div class="effect-toggle">
+          <label><input type="checkbox" id="effectNoise" checked> Noise/Grain</label>
+          <input type="range" id="noiseIntensity" min="0" max="100" value="15" class="slider">
+        </div>
+      </section>
+
+      <!-- Mosaic Editor Toggle -->
+      <section class="control-group">
+        <h2 class="control-heading">Mosaic Editor</h2>
+        <button class="btn-toggle" id="btnMosaicToggle">Open Mosaic Editor</button>
+        <div id="mosaicControls" class="hidden">
+          <div class="field-row">
+            <label>Tool</label>
+            <div class="tool-buttons">
+              <button class="btn-tool active" data-tool="draw" title="Draw">&#9998;</button>
+              <button class="btn-tool" data-tool="line" title="Line">&#9473;</button>
+              <button class="btn-tool" data-tool="rect" title="Rectangle">&#9633;</button>
+              <button class="btn-tool" data-tool="text" title="Text">T</button>
+              <button class="btn-tool" data-tool="erase" title="Erase">&#9003;</button>
+              <button class="btn-tool" data-tool="fill" title="Fill">&#9683;</button>
+            </div>
+          </div>
+          <div class="field-row">
+            <label>Draw Color</label>
+            <div class="color-picker" id="colorMosaic" data-target="mosaicColor"></div>
+          </div>
+          <div class="field-row">
+            <label>Clipart Library</label>
+            <select id="mosaicArtSelect" class="input-wide">
+              <option value="">Insert clipart...</option>
+            </select>
+            <button class="btn-small" id="btnInsertArt" style="margin-top:4px">Insert Clipart</button>
+          </div>
+          <div class="field-row">
+            <label>Import from edit.tf</label>
+            <input type="text" id="editTfUrl" class="input-wide" placeholder="Paste edit.tf URL here..." style="font-size:11px">
+            <button class="btn-small" id="btnImportEditTf" style="margin-top:4px">Import Page</button>
+          </div>
+          <button class="btn-small" id="btnClearMosaic">Clear All Mosaics</button>
+        </div>
+      </section>
+
+      <!-- Export -->
+      <section class="control-group">
+        <div class="export-buttons">
+          <button class="btn-primary" id="btnExport">Export PNG</button>
+          <button class="btn-secondary" id="btnExportClean">Export Clean</button>
+          <button class="btn-secondary" id="btnCopyClipboard">Copy to Clipboard</button>
+        </div>
+      </section>
+    </aside>
+
+    <div class="preview-pane">
+      <div class="crt-monitor" id="crtMonitor">
+        <div class="crt-bezel">
+          <div class="crt-screen-container">
+            <canvas id="teletextCanvas" width="576" height="500"></canvas>
+            <canvas id="effectsCanvas" width="576" height="500" class="effects-overlay"></canvas>
+            <div class="crt-screen-reflection"></div>
+          </div>
+          <div class="crt-controls-strip">
+            <div class="crt-knob"></div>
+            <div class="crt-knob crt-knob-small"></div>
+            <div class="crt-brand">FERGUSON</div>
+            <div class="crt-knob crt-knob-small"></div>
+            <div class="crt-knob"></div>
+          </div>
+        </div>
+        <div class="crt-stand"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Help Modal -->
+  <div class="modal-overlay hidden" id="helpModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>About TelePage</h2>
+        <button class="btn-close" id="btnCloseHelp">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>TelePage generates authentic-looking 1980s teletext screen captures in the style of BBC Ceefax, ITV Oracle, and other vintage teletext services.</p>
+        <h3>How to Use</h3>
+        <ul>
+          <li>Pick a template from the grid on the left</li>
+          <li>Edit the title, body text, and page info</li>
+          <li>Customize colors using the teletext 8-color palette</li>
+          <li>Toggle CRT effects for that authentic look</li>
+          <li>Use the Mosaic Editor to draw pixel art with teletext block graphics</li>
+          <li>Export as PNG for social media</li>
+        </ul>
+        <h3>Keyboard Shortcuts</h3>
+        <ul>
+          <li><kbd>Ctrl+E</kbd> / <kbd>Cmd+E</kbd> — Export PNG</li>
+          <li><kbd>Ctrl+Shift+E</kbd> / <kbd>Cmd+Shift+E</kbd> — Export Clean</li>
+          <li><kbd>Ctrl+Shift+C</kbd> / <kbd>Cmd+Shift+C</kbd> — Copy to Clipboard</li>
+        </ul>
+        <p class="disclaimer">Not affiliated with the BBC, ITV, Channel 4, or any broadcaster. Ceefax, Oracle, and other service names are trademarks of their respective owners.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden spans to force font loading in Safari -->
+  <div class="font-preload">
+    <span style="font-family:'Bedstead'">ABCabc123</span>
+    <span style="font-family:'Bedstead Extended'">ABCabc123</span>
+    <span style="font-family:'Mode Seven'">ABCabc123</span>
+  </div>
+
+  <footer class="app-footer">
+    <p>TelePage &mdash; Not affiliated with BBC, ITV, or any broadcaster. Teletext service names are trademarks of their respective owners.</p>
+  </footer>
+
+  <script src="js/templates.js?v=2"></script>
+  <script src="js/mosaic-art.js?v=7&t=20260220"></script>
+  <script src="js/mosaic-art-imported.js?v=3&t=20260220"></script>
+  <script src="js/edittf-import.js?v=4&t=20260220"></script>
+  <script src="js/renderer.js?v=4"></script>
+  <script src="js/crt-effects.js?v=1"></script>
+  <script src="js/mosaic-editor.js?v=13&t=20260220"></script>
+  <script src="js/export.js?v=1"></script>
+  <script src="js/app.js?v=36&t=20260220"></script>
+</body>
+</html>
